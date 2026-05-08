@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>禅道任务管理</title>
+  <style>
+    body {
+      width: 400px;
+      min-height: 300px;
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    h1 {
+      font-size: 20px;
+      color: #333;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      background: #f0f7ff;
+      border-left: 4px solid #4a90e2;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    .info h2 {
+      font-size: 16px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #4a90e2;
+    }
+
+    .info ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .info li {
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #357abd;
+    }
+
+    .stats {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 4px;
+    }
+
+    .stats-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 14px;
+    }
+
+    .stats-item:last-child {
+      border-bottom: none;
+    }
+
+    .stats-label {
+      color: #666;
+    }
+
+    .stats-value {
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>禅道任务管理</h1>
+
+  <div class="info">
+    <h2>使用说明</h2>
+    <ul>
+      <li>在禅道页面右上角点击"任务抽屉"按钮打开抽屉</li>
+      <li>右键点击任务行，选择"添加到抽屉"</li>
+      <li>在抽屉中可以拖拽调整任务排序</li>
+      <li>可以编辑任务的分类、状态和环境</li>
+    </ul>
+  </div>
+
+  <button class="btn" id="open-drawer">打开任务抽屉</button>
+
+  <div class="stats" id="stats">
+    <div class="stats-item">
+      <span class="stats-label">总任务数</span>
+      <span class="stats-value" id="total-tasks">0</span>
+    </div>
+    <div class="stats-item">
+      <span class="stats-label">进行中</span>
+      <span class="stats-value" id="in-progress">0</span>
+    </div>
+    <div class="stats-item">
+      <span class="stats-label">已完成</span>
+      <span class="stats-value" id="completed">0</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

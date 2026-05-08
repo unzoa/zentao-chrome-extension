@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "禅道任务管理器",
+  "version": "1.0.0",
+  "description": "禅道任务管理扩展，支持任务分类、排序和状态跟踪",
+  "permissions": [
+    "contextMenus",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "favicon.ico",
+      "48": "favicon.ico",
+      "128": "favicon.ico"
+    }
+  },
+  "icons": {
+    "16": "favicon.ico",
+    "48": "favicon.ico",
+    "128": "favicon.ico"
+  }
+}

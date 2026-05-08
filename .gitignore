@@ -1,0 +1,22 @@
+# 图标文件（用户需要自己生成）
+icon16.png
+icon48.png
+icon128.png
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+temp/

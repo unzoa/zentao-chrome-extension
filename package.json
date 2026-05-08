@@ -1,0 +1,15 @@
+{
+  "name": "zentao-chrome-extension",
+  "version": "1.0.0",
+  "description": "禅道任务管理 Chrome 扩展",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chrome-extension",
+    "zentao",
+    "task-management"
+  ],
+  "author": "",
+  "license": "MIT"
+}
