@@ -373,6 +373,7 @@ function addAllTasks() {
 
     let addedCount = 0;
     let skippedCount = 0;
+    const importedTaskIds = [];
 
     for (const row of rows) {
       const idCell = row.querySelector('td.c-id');
@@ -386,6 +387,7 @@ function addAllTasks() {
       const user = userCell?.textContent?.trim() || '';
 
       if (id) {
+        importedTaskIds.push(id);
         const existingIndex = tasks.findIndex(t => t.id === id);
         if (existingIndex === -1) {
           const taskData = {
@@ -410,10 +412,33 @@ function addAllTasks() {
       }
     }
 
-    if (addedCount > 0) {
+    let deletedCount = 0;
+    const tasksToDelete = tasks.filter(t => !importedTaskIds.includes(t.id));
+    if (tasksToDelete.length > 0) {
+      tasksToDelete.forEach(taskToDelete => {
+        const deleteIndex = tasks.findIndex(t => t.id === taskToDelete.id);
+        if (deleteIndex !== -1) {
+          tasks.splice(deleteIndex, 1);
+          deletedCount++;
+        }
+      });
+      console.log(`删除了 ${deletedCount} 个不在导入列表中的任务`);
+    }
+
+    if (addedCount > 0 || deletedCount > 0) {
       saveTasks();
       renderTasks();
-      alert(`成功添加 ${addedCount} 个任务${skippedCount > 0 ? `，跳过 ${skippedCount} 个已存在的任务` : ''}`);
+      let message = '';
+      if (addedCount > 0) {
+        message += `成功添加 ${addedCount} 个任务`;
+      }
+      if (skippedCount > 0) {
+        message += `，更新 ${skippedCount} 个已存在的任务`;
+      }
+      if (deletedCount > 0) {
+        message += `，删除 ${deletedCount} 个不在导入列表中的任务`;
+      }
+      alert(message);
     } else if (skippedCount > 0) {
       saveTasks();
       renderTasks();
