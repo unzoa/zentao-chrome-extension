@@ -5,7 +5,7 @@ let lastMouseY = 0;
 
 function isZentaoPage() {
   const url = window.location.href;
-  return url.includes('zentao.tigermed.net') && url.includes('/pro/my-task.html');
+  return url.includes('zentao.tigermed.net')
 }
 
 function createDrawer() {
@@ -56,6 +56,9 @@ function extractTaskData(element) {
 
     const id = tr.querySelector('td.c-id')?.textContent?.trim() || '';
     const project = tr.querySelector('td.c-name')?.textContent?.trim() || '';
+    // 获取 a 标签的 href 属性值
+    const aElement = tr.querySelector('td.c-name a');
+    const href = aElement?.getAttribute('href') || '';
     const user = tr.querySelector('td.c-user')?.textContent?.trim() || '';
 
     if (!id) return null;
@@ -63,6 +66,7 @@ function extractTaskData(element) {
     return {
       id,
       project,
+      href,
       user,
       sort: tasks.length + 1,
       system: '',
@@ -76,21 +80,27 @@ function extractTaskData(element) {
 }
 
 function addTask(taskData) {
-  console.log('尝试添加任务:', taskData);
+  console.log('尝试添加/更新任务:', taskData);
   console.log('当前任务列表:', tasks);
 
   const existingIndex = tasks.findIndex(t => t.id === taskData.id);
   console.log('查找重复任务，索引:', existingIndex);
 
   if (existingIndex !== -1) {
-    console.log('任务ID已存在:', taskData.id);
-    alert('任务ID已存在，不能重复添加！');
-    return false;
-  }
+    console.log('任务ID已存在，更新不可变字段:', taskData.id);
+    const existingTask = tasks[existingIndex];
 
-  console.log('添加新任务到数组');
-  tasks.push(taskData);
-  console.log('添加后的任务列表:', tasks);
+    existingTask.project = taskData.project;
+    existingTask.href = taskData.href;
+    existingTask.user = taskData.user;
+
+    console.log('更新后的任务:', existingTask);
+    alert(`任务 ${taskData.id} 已存在，已更新项目、链接和负责人信息！`);
+  } else {
+    console.log('添加新任务到数组');
+    tasks.push(taskData);
+    console.log('添加后的任务列表:', tasks);
+  }
 
   console.log('保存任务到localStorage');
   saveTasks();
@@ -98,7 +108,7 @@ function addTask(taskData) {
   console.log('重新渲染任务列表');
   renderTasks();
 
-  console.log('任务添加成功');
+  console.log('任务操作成功');
   return true;
 }
 
@@ -152,13 +162,15 @@ function renderTasks() {
       <div class="task-content">
         <div class="task-info">
           <div class="task-id">ID: ${task.id}</div>
-          <div class="task-project">${task.project}</div>
+          <div class="task-project">
+            <a href="${task.href}" target="_blank" style="color: ${task.href ? '#007bff' : 'inherit'};">${task.project}</a>
+          </div>
           <div class="task-user">产品: ${task.user}</div>
         </div>
         <div class="task-fields">
           <div class="field-group-container">
             <div class="field-group">
-              <label>分类:</label>
+              <label>系统:</label>
               <select class="field-system" data-id="${task.id}">
                 <option value="">请选择</option>
                 <option value="CCMS" ${task.system === 'CCMS' ? 'selected' : ''}>CCMS</option>
@@ -365,10 +377,12 @@ function addAllTasks() {
     for (const row of rows) {
       const idCell = row.querySelector('td.c-id');
       const projectCell = row.querySelector('td.c-name');
+      const aElement = row.querySelector('td.c-name a');
       const userCell = row.querySelector('td.c-user');
 
       const id = idCell?.textContent?.trim() || '';
       const project = projectCell?.textContent?.trim() || '';
+      const href = aElement?.getAttribute('href') || '';
       const user = userCell?.textContent?.trim() || '';
 
       if (id) {
@@ -377,6 +391,7 @@ function addAllTasks() {
           const taskData = {
             id,
             project,
+            href,
             user,
             sort: tasks.length + 1,
             system: '',
@@ -386,6 +401,10 @@ function addAllTasks() {
           tasks.push(taskData);
           addedCount++;
         } else {
+          const existingTask = tasks[existingIndex];
+          existingTask.project = project;
+          existingTask.href = href;
+          existingTask.user = user;
           skippedCount++;
         }
       }
@@ -396,6 +415,8 @@ function addAllTasks() {
       renderTasks();
       alert(`成功添加 ${addedCount} 个任务${skippedCount > 0 ? `，跳过 ${skippedCount} 个已存在的任务` : ''}`);
     } else if (skippedCount > 0) {
+      saveTasks();
+      renderTasks();
       alert(`所有 ${skippedCount} 个任务都已存在`);
     } else {
       alert('未找到可添加的任务');
@@ -466,6 +487,60 @@ document.addEventListener('mousemove', (e) => {
   lastMouseY = e.clientY;
 });
 
+// 监听 click 事件，判断是否点击了提交按钮
+// document.addEventListener('click', (e) => {
+//   // 页面点击事件，检查是否有完成 dialog
+//   monitorIframeSubmit();
+// })
+function monitorIframeSubmit() {
+  const iframe = document.getElementById('iframe-triggerModal');
+  if (!iframe) {
+    console.log('未找到 iframe-triggerModal iframe');
+    return;
+  }
+
+  const checkIframeLoaded = setInterval(() => {
+    try {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      if (iframeDoc && iframeDoc.readyState === 'complete') {
+        clearInterval(checkIframeLoaded);
+        console.log('iframe 已加载完成');
+
+        const submitBtn = iframeDoc.getElementById('submit');
+        if (submitBtn) {
+          submitBtn.addEventListener('click', () => {
+            console.log('检测到 iframe 内的提交按钮点击');
+
+            const labelId = iframeDoc.querySelector('span.label-id');
+            const taskId = labelId?.textContent?.trim();
+
+            if (taskId) {
+              console.log('提取到任务ID:', taskId);
+              const taskIndex = tasks.findIndex(t => t.id === taskId);
+              if (taskIndex !== -1) {
+                tasks.splice(taskIndex, 1);
+                saveTasks();
+                renderTasks();
+                console.log('已自动删除抽屉中的任务:', taskId);
+                alert(`任务 ${taskId} 已从抽屉中自动移除`);
+              }
+            }
+          });
+        } else {
+          console.log('iframe 内未找到 submit 按钮');
+        }
+      }
+    } catch (error) {
+      console.log('iframe 尚未加载完成，等待中...');
+    }
+  }, 500);
+
+  setTimeout(() => {
+    clearInterval(checkIframeLoaded);
+    console.log('iframe 加载检测超时');
+  }, 10000);
+}
+
 function extractTaskDataFromMousePosition() {
   try {
     const taskTable = document.querySelector('table');
@@ -534,5 +609,7 @@ function initExtension() {
     drawerButton.addEventListener('click', toggleDrawer);
     document.body.appendChild(drawerButton);
     console.log('扩展初始化完成');
+
+    // monitorIframeSubmit();
   }
 }

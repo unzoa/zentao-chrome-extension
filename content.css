@@ -276,10 +276,10 @@
 
 .modal-content {
   background: white;
-  padding: 30px;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
+  /* padding: 30px; */
+  /* border-radius: 8px; */
+  /* width: 400px; */
+  /* max-width: 90%; */
 }
 
 .modal-content h3 {

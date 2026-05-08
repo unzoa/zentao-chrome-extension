@@ -14,9 +14,11 @@
 ## 核心功能
 
 ### 1. 智能识别与显示
-- 自动识别禅道任务页面（`zentao.tigermed.net/pro/my-task.html`）
+- 自动识别禅道任务页面（`zentao.tigermed.net`）
 - 使用禅道官方图标作为扩展图标
-- 页面右上角显示抽屉按钮
+- 页面右侧显示抽屉按钮
+
+![alt text](image-2.png)
 
 ### 2. 快速添加任务
 
@@ -34,11 +36,12 @@
 
 #### 不可编辑字段
 - **ID**: 任务唯一标识（唯一性判断依据）
-- **项目**: 项目名称
-- **负责人**: 任务负责人
+- **任务名称**: 任务名称
+- **任务url**: 任务详情页 url
+- **产品**: 任务所属产品
 
 #### 可编辑字段
-- **分类**: CCMS、BDS、VISITRACK、HIM、SPAS
+- **系统**: CCMS、BDS、VISITRACK、HIM、SPAS
 - **状态**: 挂起、进行中、已完成
 - **环境**: test、uat、prod
 - **排序**: 拖拽调整任务顺序
@@ -78,7 +81,7 @@ chmod +x download-icon.sh
 
 ### 1. 打开抽屉
 - 访问禅道任务页面
-- 点击页面右上角的"📋 任务抽屉"按钮
+- 点击页面右侧的"📋 任务抽屉"按钮
 
 ### 2. 添加任务
 
@@ -127,6 +130,7 @@ zentao-chrome-extension/
 {
   "id": "123",
   "project": "项目A",
+  "href": "https://zentao.tigermed.net/task/view/123.html",
   "user": "张三",
   "sort": 1,
   "system": "CCMS",
@@ -138,8 +142,7 @@ zentao-chrome-extension/
 ## 技术特点
 
 ### 1. 智能任务提取
-- 支持从选中文本提取任务
-- 支持从鼠标位置自动识别任务行
+- 支持从选中任务行空白区域提取任务
 - 处理文本节点和元素节点的边界情况
 
 ### 2. 实时数据同步
@@ -168,7 +171,7 @@ zentao-chrome-extension/
 
 ## 注意事项
 
-1. **URL 识别**: 扩展只在 `https://zentao.tigermed.net/pro/my-task.html` 页面激活
+1. **URL 识别**: 扩展只在 `https://zentao.tigermed.net` 页面激活
 2. **数据持久化**: 使用 localStorage 存储，清除浏览器数据会丢失
 3. **右键菜单**:
    - "添加到抽屉" 在任意位置都显示
